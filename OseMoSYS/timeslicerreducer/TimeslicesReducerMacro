@@ -1,0 +1,127 @@
+Sub CalculateAverages()
+
+    Dim srcSheet As Worksheet
+    Dim destSheet As Worksheet
+    Dim i As Long, j As Long, k As Long
+    Dim avg As Double
+    Dim sectionSize As Long
+    Dim tecValue As String
+    Dim startRow As Long, endRow As Long
+    
+    Application.ScreenUpdating = False 'Turn off screen updating
+    Application.Calculation = xlCalculationManual 'Turn off automatic calculation
+    
+    'Define source and destination worksheets
+    Set srcSheet = ThisWorkbook.Sheets("Parameters") 'source data
+    Set destSheet = ThisWorkbook.Sheets("Parameters") 'destination data
+    
+    'Set size of sections
+    sectionSize = 96 'Size of each section
+    
+    'Array with start and end rows for each section to be processed
+    Dim rowArray(1 To 5, 1 To 2) As Long
+    rowArray(1, 1) = 261: rowArray(1, 2) = 19364
+    rowArray(2, 1) = 43749: rowArray(2, 2) = 43844
+    rowArray(3, 1) = 44037: rowArray(3, 2) = 44132
+    rowArray(4, 1) = 44325: rowArray(4, 2) = 44420
+    rowArray(5, 1) = 48662: rowArray(5, 2) = 48757
+    
+    Dim rowStart As Long, rowEnd As Long, sectionCount As Long
+    
+    'Start from K261 to BN19364
+    For i = 11 To 66 'columns K to BN
+        For arr = 1 To 5
+            rowStart = rowArray(arr, 1)
+            rowEnd = rowArray(arr, 2)
+            sectionCount = (rowEnd - rowStart + 1) / sectionSize 'Calculate number of sections based on rowStart and rowEnd
+            
+            k = rowStart - 1 'initialize k with rowStart-1
+            
+            For j = 1 To sectionCount 'sections of 96 rows
+                'Check value in column C only for the first section
+                If arr = 1 Then
+                    tecValue = srcSheet.Cells(k + 1, 3).Value
+                Else
+                    tecValue = "PWR"
+                End If
+                
+                'Calculate if column C contains "PWR" or if arr > 1
+                If tecValue Like "*PWR*" Or arr > 1 Then
+                    If arr = 1 Then ' For the first section, do the averaging
+                        'Calculate averages for each block and write to the first eight cells of the section
+                        'Block configuration is different
+                        avg = Application.WorksheetFunction.Average(srcSheet.Range(srcSheet.Cells(k + 1, i), srcSheet.Cells(k + 6, i)), srcSheet.Range(srcSheet.Cells(k + 19, i), srcSheet.Cells(k + 24, i)))
+                        destSheet.Cells(k + 1, i).Value = avg
+                        avg = Application.WorksheetFunction.Average(srcSheet.Range(srcSheet.Cells(k + 7, i), srcSheet.Cells(k + 18, i)))
+                        destSheet.Cells(k + 2, i).Value = avg
+                        
+                        avg = Application.WorksheetFunction.Average(srcSheet.Range(srcSheet.Cells(k + 25, i), srcSheet.Cells(k + 30, i)), srcSheet.Range(srcSheet.Cells(k + 43, i), srcSheet.Cells(k + 48, i)))
+                        destSheet.Cells(k + 3, i).Value = avg
+                        avg = Application.WorksheetFunction.Average(srcSheet.Range(srcSheet.Cells(k + 31, i), srcSheet.Cells(k + 42, i)))
+                        destSheet.Cells(k + 4, i).Value = avg
+                        
+                        avg = Application.WorksheetFunction.Average(srcSheet.Range(srcSheet.Cells(k + 49, i), srcSheet.Cells(k + 54, i)), srcSheet.Range(srcSheet.Cells(k + 67, i), srcSheet.Cells(k + 72, i)))
+                        destSheet.Cells(k + 5, i).Value = avg
+                        avg = Application.WorksheetFunction.Average(srcSheet.Range(srcSheet.Cells(k + 55, i), srcSheet.Cells(k + 66, i)))
+                        destSheet.Cells(k + 6, i).Value = avg
+                        
+                        avg = Application.WorksheetFunction.Average(srcSheet.Range(srcSheet.Cells(k + 73, i), srcSheet.Cells(k + 78, i)), srcSheet.Range(srcSheet.Cells(k + 91, i), srcSheet.Cells(k + 96, i)))
+                        destSheet.Cells(k + 7, i).Value = avg
+                        avg = Application.WorksheetFunction.Average(srcSheet.Range(srcSheet.Cells(k + 79, i), srcSheet.Cells(k + 90, i)))
+                        destSheet.Cells(k + 8, i).Value = avg
+                        
+                        'Set remaining cells in the section to 0
+                        For m = k + 9 To k + sectionSize
+                            destSheet.Cells(m, i).Value = 0
+                        Next m
+                    ElseIf arr > 1 And arr < 5 Then ' For the second, third, and fourth sections, do the summation
+                        'Calculate sums for each block and write to the first eight cells of the section
+                        'Block configuration is different
+                        avg = Application.WorksheetFunction.Sum(srcSheet.Range(srcSheet.Cells(k + 1, i), srcSheet.Cells(k + 6, i)), srcSheet.Range(srcSheet.Cells(k + 19, i), srcSheet.Cells(k + 24, i)))
+                        destSheet.Cells(k + 1, i).Value = avg
+                        avg = Application.WorksheetFunction.Sum(srcSheet.Range(srcSheet.Cells(k + 7, i), srcSheet.Cells(k + 18, i)))
+                        destSheet.Cells(k + 2, i).Value = avg
+                        
+                        avg = Application.WorksheetFunction.Sum(srcSheet.Range(srcSheet.Cells(k + 25, i), srcSheet.Cells(k + 30, i)), srcSheet.Range(srcSheet.Cells(k + 43, i), srcSheet.Cells(k + 48, i)))
+                        destSheet.Cells(k + 3, i).Value = avg
+                        avg = Application.WorksheetFunction.Sum(srcSheet.Range(srcSheet.Cells(k + 31, i), srcSheet.Cells(k + 42, i)))
+                        destSheet.Cells(k + 4, i).Value = avg
+                        
+                        avg = Application.WorksheetFunction.Sum(srcSheet.Range(srcSheet.Cells(k + 49, i), srcSheet.Cells(k + 54, i)), srcSheet.Range(srcSheet.Cells(k + 67, i), srcSheet.Cells(k + 72, i)))
+                        destSheet.Cells(k + 5, i).Value = avg
+                        avg = Application.WorksheetFunction.Sum(srcSheet.Range(srcSheet.Cells(k + 55, i), srcSheet.Cells(k + 66, i)))
+                        destSheet.Cells(k + 6, i).Value = avg
+                        
+                        avg = Application.WorksheetFunction.Sum(srcSheet.Range(srcSheet.Cells(k + 73, i), srcSheet.Cells(k + 78, i)), srcSheet.Range(srcSheet.Cells(k + 91, i), srcSheet.Cells(k + 96, i)))
+                        destSheet.Cells(k + 7, i).Value = avg
+                        avg = Application.WorksheetFunction.Sum(srcSheet.Range(srcSheet.Cells(k + 79, i), srcSheet.Cells(k + 90, i)))
+                        destSheet.Cells(k + 8, i).Value = avg
+                        
+                        'Set remaining cells in the section to 0
+                        For m = k + 9 To k + sectionSize
+                            destSheet.Cells(m, i).Value = 0
+                        Next m
+                    Else ' For the fifth section, set the first eight cells to 0.125 and the rest to 0
+                        For m = k + 1 To k + 8
+                            destSheet.Cells(m, i).Value = 0.125
+                        Next m
+                        For m = k + 9 To k + sectionSize
+                            destSheet.Cells(m, i).Value = 0
+                        Next m
+                    End If
+                End If
+                'Move to the next section
+                k = k + sectionSize
+            Next j
+        Next arr
+    Next i
+    
+    'Turn back on screen updating and automatic calculation
+    Application.ScreenUpdating = True
+    Application.Calculation = xlCalculationAutomatic
+    
+    'Pop-up message when the macro completes successfully
+    MsgBox "Timeslices reduced from 96 to 8.", vbInformation, "Success"
+
+End Sub
+
