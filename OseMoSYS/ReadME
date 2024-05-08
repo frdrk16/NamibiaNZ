@@ -1,1 +1,34 @@
+Watt's Next Advisory: OSeMOSYS Data repository
+-----------------------------------------
 
+This data deposit contains the following primary folders:
+
+customSANDs
+Results
+Starter Kit_2023
+timeslicerreducer
+
+Along with the following files:
+
+CurrentPolicyRETargetWorkbook.xlsx
+OSeMOSYS Inputs_Outputs.pptx
+
+Contents:
+
+customSANDs
+- All modified scenarios in SAND file format, used for cloud modelling
+
+Results
+- contains final results for all modelled scenarios in .csv format (including plotting excel)
+
+Starter Kit_2023
+- Contains raw, unmodified starter kit used for baseline scenario modelling
+
+timeslicerreducer
+-used to reduce timeslices to accelerate cloud computing speed for acclerated exploratory modelling
+
+CurrentPolicyRETargetWorkbook.xlsx
+- workbook used for minor scenario modification calculations
+
+OSeMOSYS Inputs_Outputs.pptx
+-power point explaining osemosys input and output parameters
